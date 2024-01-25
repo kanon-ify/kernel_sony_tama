@@ -16,9 +16,9 @@ done
 [[ -z ${ZIP} ]] && { echo "${bold}LOADING-_-....${normal}"; }
 
 DEFCONFIG="tama_aurora_defconfig"
-export KBUILD_BUILD_USER=kanonify
-export KBUILD_BUILD_HOST=aurora
-TC_DIR="/workspaces/proton-clang"
+export KBUILD_BUILD_USER=Aurora
+export KBUILD_BUILD_HOST=kanonify
+TC_DIR="/home/kanonify/clang-17"
 export PATH="$TC_DIR/bin:$PATH"
 
 if [[ $1 = "-r" || $1 = "--regen" ]]; then

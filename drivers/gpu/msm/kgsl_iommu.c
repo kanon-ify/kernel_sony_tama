@@ -782,7 +782,6 @@ static int kgsl_iommu_fault_handler(struct iommu_domain *domain,
 	unsigned int curr_context_id = 0;
 	struct kgsl_context *context;
 	char *fault_type = "unknown";
-	bool fault_ret_flag = false;
 
 	static DEFINE_RATELIMIT_STATE(_rs,
 					DEFAULT_RATELIMIT_INTERVAL,
@@ -843,11 +842,9 @@ static int kgsl_iommu_fault_handler(struct iommu_domain *domain,
 		 * Turn off GPU IRQ so we don't get faults from it too.
 		 * The device mutex must be held to change power state
 		 */
-		if (mutex_trylock(&device->mutex)) {
-			kgsl_pwrctrl_change_state(device, KGSL_STATE_AWARE);
-			mutex_unlock(&device->mutex);
-		} else
-			fault_ret_flag = true;
+		mutex_lock(&device->mutex);
+		kgsl_pwrctrl_change_state(device, KGSL_STATE_AWARE);
+		mutex_unlock(&device->mutex);
 	}
 
 	ptbase = KGSL_IOMMU_GET_CTX_REG_Q(ctx, TTBR0);
@@ -917,8 +914,6 @@ static int kgsl_iommu_fault_handler(struct iommu_domain *domain,
 				KGSL_LOG_DUMP(ctx->kgsldev, "*EMPTY*\n");
 		}
 	}
-	if (fault_ret_flag)
-		return ret;
 
 	/*
 	 * We do not want the h/w to resume fetching data from an iommu

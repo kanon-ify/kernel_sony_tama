@@ -1327,19 +1327,6 @@ static void ion_dma_buf_release(struct dma_buf *dmabuf)
 static void *ion_dma_buf_kmap(struct dma_buf *dmabuf, unsigned long offset)
 {
 	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer), iommu_data);
-
-	return buffer->vaddr + offset * PAGE_SIZE;
-}
-
-static void ion_dma_buf_kunmap(struct dma_buf *dmabuf, unsigned long offset,
-			       void *ptr)
-{
-}
-
-static int ion_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
-					enum dma_data_direction direction)
-{
-	struct ion_buffer *buffer = container_of(dmabuf->priv, typeof(*buffer), iommu_data);
 	void *vaddr;
 
 	if (!buffer->heap->ops->map_kernel) {
